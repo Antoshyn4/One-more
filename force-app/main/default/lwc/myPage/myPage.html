@@ -1,0 +1,16 @@
+<template>
+    <lightning-card  title="My Page">
+        <c-list-of-items
+        page-number={pageNum}
+        count-of-columns={countOfColumns.data}
+        count-of-page-elements={countOfPageElements.data}
+        count-al-el={countOfAllElements.data}>
+        </c-list-of-items>
+        <c-menu 
+        onredraw={reDraw}
+        count-of-pages={countOfPages}
+        count-of-all-elements={countOfAllElements.data}
+        count-of-page-elements={countOfPageElements.data}
+        numbers={countOfPageElements.data}></c-menu>
+    </lightning-card>
+</template> 
