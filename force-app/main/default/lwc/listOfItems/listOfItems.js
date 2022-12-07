@@ -3,7 +3,7 @@ import getAccountList from '@salesforce/apex/ComponentCustomSettings.getAccountL
 
 export default class ListOfItems extends LightningElement {
     @api countOfPageElements;
-    @api countOfAllElements;
+    countOfAllElements;
     @api countOfColumns;
     @api pageNumber;
     listOfAllElements = [];
@@ -14,6 +14,7 @@ export default class ListOfItems extends LightningElement {
     @wire(getAccountList)
     wiredAccount({error,data}){
         if (data) {
+            alert('Test');
             this.record.length = 0;
             let temp = []; 
             for (const key in data) {
@@ -21,6 +22,11 @@ export default class ListOfItems extends LightningElement {
             }
             this.record = temp;
             this.error = undefined; 
+            if (this.countOfAllElements > this.record.length) {
+                this.countOfAllElements = this.record.length;
+                const countRecords = new CustomEvent('inccount',{detail: this.countOfAllElements});
+                this.dispatchEvent(countRecords);
+            }
             console.log("Ok");
         }
         else if (error){
@@ -43,16 +49,25 @@ export default class ListOfItems extends LightningElement {
 
 
     @api
-    get countAlEl(){
+    get countOfAllElements(){
         return this.countOfAllElements;
     }
-    set countAlEl(count){
+    set countOfAllElements(count){
+        debugger;
+        if (count > this.record.length && this.record.length > 0) {
+            count = this.record.length;
+            const countRecords = new CustomEvent('inccount',{detail: count});
+            this.dispatchEvent(countRecords);
+        }
         this.countOfAllElements = count;
         let temp = [];
-        for (let i = 0; i < this.countOfAllElements; i++) {
-            temp.push('Element number ' + (i + 1));
+        debugger;
+        for (let i = 0; i < this.countOfAllElements; i++) {  
+            if (this.record[i] != undefined) {
+                temp.push(this.record[i].accName);
+            }
         }
-        this.listOfAllElements = temp;  
+        this.listOfAllElements = temp;
         if (count != undefined) {
             this.setpgNum(undefined);
         }

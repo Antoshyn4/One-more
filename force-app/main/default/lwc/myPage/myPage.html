@@ -1,16 +1,24 @@
 <template>
+<div if:true={countOfAllElements}>
+<div if:true={record}>
     <lightning-card  title="My Page">
-        <c-list-of-items
-        page-number={pageNum}
-        count-of-columns={countOfColumns.data}
-        count-of-page-elements={countOfPageElements.data}
-        count-al-el={countOfAllElements.data}>
-        </c-list-of-items>
+        <div if:true={record}>
+            <c-list-of-accounts
+            count-of-all-elements={countOfAllElements}
+            count-of-columns={countOfColumns}
+            count-of-page-elements={countOfPageElements}
+            count-of-pages={countOfPages}
+            page-number={pageNum}
+            record={record}
+            ></c-list-of-accounts>
+        </div>
         <c-menu 
         onredraw={reDraw}
         count-of-pages={countOfPages}
-        count-of-all-elements={countOfAllElements.data}
-        count-of-page-elements={countOfPageElements.data}
-        numbers={countOfPageElements.data}></c-menu>
+        count-of-all-elements={countOfAllElements}
+        count-of-page-elements={countOfPageElements}
+        ></c-menu>
     </lightning-card>
+</div>
+</div>
 </template> 

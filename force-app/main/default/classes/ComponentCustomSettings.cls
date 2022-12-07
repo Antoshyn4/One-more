@@ -20,11 +20,10 @@ public class ComponentCustomSettings {
     @AuraEnabled(cacheable=true)
     public static List<AggregateResult> getAccountList(){
         List<AggregateResult> listOfAccounts = [SELECT COUNT(AccountId), Account.Name accName, Account.Id accId FROM Contact WHERE AccountId != null GROUP BY Account.Name, Account.Id];
-        for (AggregateResult aggr : listOfAccounts){
-            System.debug(aggr.get('accName'));
-            System.debug(aggr.get('accId'));
-            System.debug(aggr.get('expr0'));
-        }
         return listOfAccounts;
+    }
+    @AuraEnabled(cacheable=true)
+    public static My_page_settings__c getCustomSettings(){
+        return My_page_settings__c.getValues('First Page');
     }
 }

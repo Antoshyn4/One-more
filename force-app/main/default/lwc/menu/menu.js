@@ -9,17 +9,7 @@ export default class Menu extends LightningElement {
     isFirstPage = true;  
     isLastPage = false;
     inputValue = this.currentPageNum;
-    isSingle;
-
-    @api 
-    get numbers(){
-        return 1;
-    }
-    set numbers(count){
-        this.countOfPages = Math.ceil(this.countOfAllElements/this.countOfPageElements);
-        this.isLastPage = this.currentPageNum == this.countOfPages ? true : false;
-        this.isSingle = this.countOfPages == 1 ? true : false;
-    }
+    isSingle = this.countOfPages == 1 ? true: false;
 
     drawPreviousPage(){
         this.currentPageNum--;

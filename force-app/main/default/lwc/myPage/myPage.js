@@ -1,24 +1,54 @@
 import { LightningElement, track, wire } from 'lwc';
-import getAllCount from '@salesforce/apex/ComponentCustomSettings.getAllCount';
-import getColumnsCount from '@salesforce/apex/ComponentCustomSettings.getColumnsCount';
-import getPageElementsCount from '@salesforce/apex/ComponentCustomSettings.getPageElementsCount';
+import getCustomSettings from '@salesforce/apex/ComponentCustomSettings.getCustomSettings';
+import getAccountList from '@salesforce/apex/ComponentCustomSettings.getAccountList';
 
 export default class MyPage extends LightningElement {
-
-    @wire(getColumnsCount)
-    countOfColumns;
-    @wire(getAllCount)
-    countOfAllElements;
-    @wire(getPageElementsCount)
-    countOfPageElements;
-
+    @track countOfColumns;
+    @track countOfAllElements;
+    @track countOfPageElements;
+    @track countOfPages;
+    @track record = [];
+    @track error; 
     pageNum = 1;
 
-    countOfPages;
-
+    @wire(getCustomSettings)
+    wiredCustomSettings({error, data}){
+        if (data) {
+            this.countOfAllElements = data.All_elements_count__c;
+            this.countOfColumns = data.Columns_count__c;
+            this.countOfPageElements = data.On_page_elements_count__c;
+            this.countOfPages = Math.ceil(this.countOfAllElements/this.countOfPageElements);
+        }
+        else if (error) {
+            alert("Error");
+        }
+    }
+    @wire(getAccountList)
+    wiredList({error,data}){
+        if (data) {
+            this.record.length = 0;
+            let temp = []; 
+            for (const key in data) {
+                temp.push(data[key])
+            }
+            this.record = temp;
+            this.error = undefined; 
+            if (this.countOfAllElements > this.record.length) {
+                this.countOfAllElements = this.record.length;
+                this.countOfPages = Math.ceil(this.countOfAllElements/this.countOfPageElements);
+            }
+            console.log("Ok");
+        }
+        else if (error){
+            this.record = undefined;
+            this.error = error;
+            console.log("Not Ok");
+            alert('Error');
+        }
+    }
     reDraw(event){
-        this.countOfPages = Math.ceil(this.countOfAllElements.data/this.countOfPageElements.data);
+        this.countOfPages = Math.ceil(this.countOfAllElements/this.countOfPageElements);
         this.pageNum = event.detail;
-        this.template.querySelector('c-list-of-items').setpgNum(this.pageNum);
+        this.template.querySelector('c-list-of-accounts').draw(this.pageNum);
     }
 }
