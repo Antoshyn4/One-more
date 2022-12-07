@@ -1,4 +1,5 @@
-import { LightningElement,api,track } from 'lwc';
+import { LightningElement,api,track,wire } from 'lwc';
+import getAccountList from '@salesforce/apex/ComponentCustomSettings.getAccountList';
 
 export default class ListOfItems extends LightningElement {
     @api countOfPageElements;
@@ -7,6 +8,39 @@ export default class ListOfItems extends LightningElement {
     @api pageNumber;
     listOfAllElements = [];
     listOfElements = [];
+
+    @track record = [];
+    @track error;
+    @wire(getAccountList)
+    wiredAccount({error,data}){
+        if (data) {
+            this.record.length = 0;
+            let temp = []; 
+            for (const key in data) {
+                temp.push(data[key])
+            }
+            this.record = temp;
+            this.error = undefined; 
+            console.log("Ok");
+        }
+        else if (error){
+            this.record = undefined;
+            this.error = error;
+            console.log("Not Ok");
+        }
+    }
+    
+    get accName(){
+        let s = "";
+        for (let i = 0; i < this.record.length; i++) {
+            console.log(this.record[i].accName);
+        }
+        for (const key in this.record) {
+            s += key.accName;
+        }
+        return s;
+    }
+
 
     @api
     get countAlEl(){

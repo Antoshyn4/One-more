@@ -1,4 +1,7 @@
 <template>
+    <div class="slds-m-around_medium"  if:true={record}>
+        <div>Rec:{accName}</div>
+    </div>
     <div class="slds-grid">
         <template for:each={listOfElements} for:item="elementArr">
             <div class="slds-col" key={elementArr}>

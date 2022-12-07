@@ -19,7 +19,6 @@ export default class Menu extends LightningElement {
         this.countOfPages = Math.ceil(this.countOfAllElements/this.countOfPageElements);
         this.isLastPage = this.currentPageNum == this.countOfPages ? true : false;
         this.isSingle = this.countOfPages == 1 ? true : false;
-        debugger;
     }
 
     drawPreviousPage(){
