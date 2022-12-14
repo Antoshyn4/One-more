@@ -1,10 +1,22 @@
 <template>
+    
     <div class="slds-m-around_medium"  if:true={record}>
         <div class="slds-grid">
             <template for:each={listOfElements} for:item="elementArr">
                 <div class="slds-col" key={elementArr}>
                     <template for:each={elementArr.value} for:item="element">
-                        <div class="colum" key={element} >{element}</div>
+                        <div class="colum" key={element} >
+                            {element.Name}
+                            <template if:true={element.Contacts}>
+                                <lightning-accordion allow-multiple-sections-open>
+                                    <lightning-accordion-section name="A" label={element.Count}>
+                                        <template for:each={element.Contacts} for:item="Contact">
+                                            <p key={Contact}>{Contact}</p>
+                                        </template>
+                                    </lightning-accordion-section>
+                                </lightning-accordion>
+                            </template>
+                        </div>                        
                     </template>
                 </div>
             </template>

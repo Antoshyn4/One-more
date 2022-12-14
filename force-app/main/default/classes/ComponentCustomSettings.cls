@@ -18,8 +18,8 @@ public class ComponentCustomSettings {
         return  Integer.valueOf(page.On_page_elements_count__c);
     }
     @AuraEnabled(cacheable=true)
-    public static List<AggregateResult> getAccountList(){
-        List<AggregateResult> listOfAccounts = [SELECT COUNT(AccountId), Account.Name accName, Account.Id accId FROM Contact WHERE AccountId != null GROUP BY Account.Name, Account.Id];
+    public static List<Account> getAccountList(){
+        List<Account> listOfAccounts = [SELECT Name, (SELECT Name FROM Contacts)  FROM Account ];
         return listOfAccounts;
     }
     @AuraEnabled(cacheable=true)

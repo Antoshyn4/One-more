@@ -1,6 +1,7 @@
 import { LightningElement,api, track } from 'lwc';
 
 export default class ListOfAccounts extends LightningElement {
+    activeSections = ['A', 'C'];
     @api countOfColumns;
     @api countOfAllElements;
     @api countOfPageElements;
@@ -15,7 +16,17 @@ export default class ListOfAccounts extends LightningElement {
         let temp = [];
         for (let i = 0; i < this.countOfAllElements; i++) {  
             if (this.record[i] != undefined) {
-                temp.push(this.record[i].accName);
+                let object = {};
+                object['Contacts'] = [];
+                object['Count'] = "Count of Contacts: ";
+                let counter = 0;
+                object['Name'] = this.record[i].Name;
+                for (const key in this.record[i].Contacts) {
+                    object.Contacts.push(String(this.record[i].Contacts[key].Name));
+                    counter++;
+                }
+                object.Count += counter;
+                temp.push(object);
             }
         }
         this.listOfAllElements = temp;
@@ -29,7 +40,13 @@ export default class ListOfAccounts extends LightningElement {
                 if (z + 1 < Math.ceil(this.countOfPageElements/this.countOfColumns) || 
                 (this.countOfPageElements % this.countOfColumns == 0 || 
                     i + 1 <= this.countOfPageElements % this.countOfColumns)) {
-                    object.value.push(this.listOfAllElements[startIndex + i + z * this.countOfColumns]);
+                    let inObject = {};
+                    if (this.listOfAllElements[startIndex + i + z * this.countOfColumns]) {
+                        inObject['Name'] = this.listOfAllElements[startIndex + i + z * this.countOfColumns].Name;
+                        inObject['Count'] = this.listOfAllElements[startIndex + i + z * this.countOfColumns].Count;
+                        inObject['Contacts'] = this.listOfAllElements[startIndex + i + z * this.countOfColumns].Contacts;
+                    }
+                    object.value.push(inObject);
                 }
             }  
             temp2.push(object); 
@@ -50,7 +67,13 @@ export default class ListOfAccounts extends LightningElement {
                 if (z + 1 < Math.ceil(this.countOfPageElements/this.countOfColumns) || 
                 (this.countOfPageElements % this.countOfColumns == 0 || 
                     i + 1 <= this.countOfPageElements % this.countOfColumns)) {
-                    object.value.push(this.listOfAllElements[startIndex + i + z * this.countOfColumns]);
+                    let inObject = {};
+                    if (this.listOfAllElements[startIndex + i + z * this.countOfColumns]) {
+                        inObject['Name'] = this.listOfAllElements[startIndex + i + z * this.countOfColumns].Name;
+                        inObject['Count'] = this.listOfAllElements[startIndex + i + z * this.countOfColumns].Count;
+                        inObject['Contacts'] = this.listOfAllElements[startIndex + i + z * this.countOfColumns].Contacts;
+                    }
+                    object.value.push(inObject);
                 }
             }  
             temp2.push(object); 
