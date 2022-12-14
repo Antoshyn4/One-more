@@ -1,5 +1,30 @@
 .colum {
     color: rgb(51, 2, 63);
-    border: 1px solid rgb(51, 2, 63);
     text-align: center;
+    min-height: 250px;
+}
+.Name{
+    border: 2px solid rgb(11, 184, 19);
+}
+p {
+    font-size:medium;
+    color: rgb(0, 0, 0);
+}
+[data-count = '0']{
+    border: 2px solid rgb(175, 22, 22);
+}
+[data-count = '1']{
+    border: 2px solid rgb(175, 22, 22);
+}
+[data-count = '2']{
+    border: 2px solid rgb(175, 22, 22);
+}
+[data-count = '3']{
+    border: 0px solid rgb(175, 22, 22);
+}
+[data-count = '4']{
+    border: 0px solid rgb(175, 22, 22);
+}
+[data-count = '5']{
+    border: 0px solid rgb(175, 22, 22);
 }
