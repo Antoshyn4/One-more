@@ -1,24 +1,28 @@
 <template>
-<div if:true={countOfAllElements}>
-<div if:true={record}>
     <lightning-card  title="My Page">
-        <div if:true={record}>
-            <c-list-of-accounts
-            count-of-all-elements={countOfAllElements}
-            count-of-columns={countOfColumns}
-            count-of-page-elements={countOfPageElements}
-            count-of-pages={countOfPages}
-            page-number={pageNum}
-            record={record}
-            ></c-list-of-accounts>
+        <c-search-and-sort
+        sort-field = {sortField}
+        sorted-by-descending={sortedByDescending}   
+        onrecordchange={changeRecord}
+        onfill={fillAllValues}
+        onsort={changeSort}></c-search-and-sort>
+        <div if:true={noSearchResult}>
+            <P>No result</P>
         </div>
+        <c-list-of-accounts
+                    count-of-all-elements={countOfAllElementsAct}
+                    count-of-columns={countOfColumns}
+                    count-of-page-elements={countOfPageElements}
+                    count-of-pages={countOfPagesAct}
+                    page-number={pageNum}
+                    record-please={record}
+        ></c-list-of-accounts>
         <c-menu 
-        onredraw={reDraw}
-        count-of-pages={countOfPages}
-        count-of-all-elements={countOfAllElements}
-        count-of-page-elements={countOfPageElements}
-        ></c-menu>
+                    current-page-num={pageNum}
+                    onredraw={reDraw}
+                    count-of-pages={countOfPagesAct}
+                    count-of-all-elements={countOfAllElementsAct}
+                    count-of-page-elements={countOfPageElements}
+        ></c-menu> 
     </lightning-card>
-</div>
-</div>
 </template> 
