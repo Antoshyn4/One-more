@@ -5,12 +5,27 @@ export default class Menu extends LightningElement {
     @api countOfPageElements;
    
     @api countOfPages;
-    currentPageNum = 1;
-    isFirstPage = true;  
-    isLastPage = false;
-    inputValue = this.currentPageNum;
-    isSingle = this.countOfPages == 1 ? true: false;
+    @api currentPageNum;
+    @track isFirstPage;
+    @track isLastPage;
+    inputValue;
+    isSingle;
 
+    connectedCallback(){
+        debugger;
+        this.isFirstPage = true;  
+        this.isLastPage = false;
+        this.inputValue = this.currentPageNum;
+        this.isSingle = this.countOfPages == 1 ? true: false;
+    }       
+    @api changeCount(countOfPages){
+        this.countOfPages = countOfPages;
+        this.isFirstPage = true;  
+        this.isLastPage = false;
+        this.isSingle = (this.countOfPages == 1 || this.countOfPages == 0) ? true: false;
+        this.currentPageNum = 1;
+        this.inputValue = this.currentPageNum;
+    }
     drawPreviousPage(){
         this.currentPageNum--;
         this.inputValue--;

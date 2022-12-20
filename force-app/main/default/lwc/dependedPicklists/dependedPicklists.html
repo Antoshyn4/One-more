@@ -1,17 +1,16 @@
 <template>
     <lightning-card>
-        <lightning-combobox label="Parent"
-                            options={parentOptions} 
-                            value={selectedControlling}
-                            onchange={fetchDependentValue}
-                            >
-        </lightning-combobox>
-        <lightning-combobox label="Child"
-                            options={childOptions} 
-                            value={childSelected}
-                            disabled={dependentDisabled}
-                            onchange={handleDependentPicklist}                                    
-                            >
-        </lightning-combobox>
+        <lightning-record-edit-form
+            object-api-name="Dependencies__c" 
+            record-id="a0FDn0000001mGBMAY">
+                    <lightning-input-field
+                    field-name="Parent__c"
+                    type="submit"
+                    ></lightning-input-field>
+                    <lightning-input-field
+                    field-name="Child__c"
+                    type="submit"
+                    ></lightning-input-field>
+        </lightning-record-edit-form>
     </lightning-card>
 </template>

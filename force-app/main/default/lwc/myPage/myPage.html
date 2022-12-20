@@ -2,6 +2,8 @@
     <lightning-card  title="My Page">
         <c-search-and-sort
         sort-field = {sortField}
+        parent-name={parentName}
+        child-name={childName}
         sorted-by-descending={sortedByDescending}   
         onrecordchange={changeRecord}
         onfill={fillAllValues}
@@ -15,6 +17,8 @@
                     count-of-page-elements={countOfPageElements}
                     count-of-pages={countOfPagesAct}
                     page-number={pageNum}
+                    parent-name={parentName}
+                    child-name={childName}
                     record-please={record}
         ></c-list-of-accounts>
         <c-menu 

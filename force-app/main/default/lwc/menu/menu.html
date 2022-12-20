@@ -1,41 +1,37 @@
 <template>
     <div class="slds-grid">
-        <template if:false={isFirstPage}>
-            <div class="slds-col">
-                <div class = "Left">
-                    <button onclick={drawFirstPage}>First</button>
-                </div>
-            </div>
-            <div class="slds-col">
-                <div class = "Center">
-                    <button onclick={drawPreviousPage}>Previous</button>
-                </div>
-            </div>
-        </template>
-        <template if:true={isFirstPage}>
-            <div class="slds-col"></div>
-        </template>
         <template if:false={isSingle}>
             <div class="slds-col">
-                <div class = "Center">
-                    <input type="text" value={inputValue} onchange={drawSomePage}>
-                </div>
-            </div>
-        </template>
-        <template if:false={isLastPage}>
-            <div class="slds-col">
-                <div class = "Center">
-                    <button onclick={drawNextPage}>Next</button>
+                <div class = "Left">
+                    <button disabled={isFirstPage} onclick={drawFirstPage}>First</button>
                 </div>
             </div>
             <div class="slds-col">
-                <div class = "Right">
-                    <button onclick={drawLastPage}>Last</button>
+                <div class = "Center">
+                    <button disabled={isFirstPage} onclick={drawPreviousPage}>Previous</button>
                 </div>
             </div>
-        </template>
-        <template if:true={isLastPage}>
-            <div class="slds-col"></div>
+            <template if:true={isFirstPage}>
+                <div class="slds-col"></div>
+            </template>
+                <div class="slds-col">
+                    <div class = "Center">
+                        <input type="text" value={inputValue} onchange={drawSomePage}>
+                    </div>
+                </div>
+                <div class="slds-col">
+                    <div class = "Center">
+                        <button disabled={isLastPage} onclick={drawNextPage}>Next</button>
+                    </div>
+                </div>
+                <div class="slds-col">
+                    <div class = "Right">
+                        <button disabled={isLastPage} onclick={drawLastPage}>Last</button>
+                    </div>
+                </div>
+            <template if:true={isLastPage}>
+                <div class="slds-col"></div>
+            </template>
         </template>
     </div>
 </template>
