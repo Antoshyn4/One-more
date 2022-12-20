@@ -44,7 +44,10 @@ export default class MyModal extends LightningModal {
                 for (const key in inputCmp) {
                     if (inputCmp[key].fieldName == 'Phone') {
                         inputCmp[key].value = event.target.value.replace(/[a-zA-Z]/g,'');
+                        inputCmp[key].value = event.target.value.replace(/^\-/,'-');
                         inputCmp[key].value = event.target.value.replace('\ ','-');
+                        inputCmp[key].value = event.target.value.replace(/(?!\-)[^\w\s]/,'');
+                        inputCmp[key].value = event.target.value.replace(/^\-{1,99}/g,'');   
                     }
                 }
                 break;
@@ -52,7 +55,10 @@ export default class MyModal extends LightningModal {
                 for (const key in inputCmp) {
                     if (inputCmp[key].fieldName == 'Fax') {
                         inputCmp[key].value = event.target.value.replace(/[a-zA-Z]/g,'');
+                        inputCmp[key].value = event.target.value.replace(/^\-/,'-');
                         inputCmp[key].value = event.target.value.replace('\ ','-');
+                        inputCmp[key].value = event.target.value.replace(/(?!\-)[^\w\s]/,'');
+                        inputCmp[key].value = event.target.value.replace(/^\-{1,99}/g,'');   
                     }
                 }
                 break;
