@@ -1,0 +1,16 @@
+.THIS {
+    background-color: white;
+}
+.THIS p {
+    font-size: medium ;
+    color: rgb(0, 0, 0);
+    text-align: center;
+}
+.THIS .colum {
+    color: rgb(51, 2, 63);
+    text-align: center;
+    min-height: 240px;
+}
+.THIS .Name{
+    border: 2px solid rgb(11, 184, 19);
+}

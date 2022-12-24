@@ -1,0 +1,42 @@
+<aura:component>
+<aura:attribute name="listOfAllObjects" type="object[]"/>
+<aura:attribute name="activeSections" type="List" default="['001Dn000006iSHcIAM']"/>
+<aura:handler name="init" action="{!c.doInit}" value="{!this}"/> 
+<section class="slds-card__body">
+    <div id="list" class="slds-grid">
+        <aura:iteration items="{!v.listOfAllObjects}" var="item">
+            <div class="slds-col">
+                <aura:iteration items="{!item.value}" var="element">
+                    <div class="colum">
+                        <div class="Name" onclick="{!c.doPopUp}" aria-haspopup="modal" data-id="{!element.Id}" data-count="{!element.Num}">
+                            {!element.Name}
+                        </div>
+                        <aura:if isTrue="{!element.Num > 0}">
+                            <lightning:accordion
+                                allowMultipleSectionsOpen="true"
+                                onsectiontoggle="{!c.handleSectionToggle}"
+                                class="accordion"
+                                activeSectionName="{v.activeSections}"
+                                >
+                                <lightning:accordionSection name="{!element.Id}" class="Test" label="{!element.Count}">
+                                    <aura:iteration items="{!element.Contacts}" var="Contact">
+                                        <div onclick="{c.doPopUp}" aura-id="{!Contact.Id}">
+                                            <p>{!Contact.Name}</p>
+                                        </div>
+                                    </aura:iteration>
+                                </lightning:accordionSection >
+                            </lightning:accordion>
+                            <aura:set attribute="else">
+                            <p>{!element.Count}</p>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                </aura:iteration>
+            </div>
+        </aura:iteration>
+    </div>
+
+
+
+</section>
+</aura:component>	

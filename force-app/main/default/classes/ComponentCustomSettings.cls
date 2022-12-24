@@ -109,22 +109,26 @@ public class ComponentCustomSettings {
         for (SObject ob : searchList[0]) {
             parentIds.add((Id)ob.get('Id'));
         }
+        System.debug( searchList[1]);
         for (SObject ob : searchList[1]) {
             if (childName == 'Contacts') {
-                parentIdFromChild.add((Id)ob.get('AccountId'));
+                if (!parentIdFromChild.contains((Id)ob.get('AccountId'))) {
+                    parentIdFromChild.add((Id)ob.get('AccountId'));
+                }
             } else {
-                parentIdFromChild.add((Id)ob.get('ContactId'));
+                if (!parentIdFromChild.contains((Id)ob.get('ContactId'))) {
+                    parentIdFromChild.add((Id)ob.get('ContactId'));
+                }
             }
             childIds.add((Id)ob.get('Id'));
         }
-        System.debug(childIds);
         for (Id accId : parentIdFromChild) { 
             if (parentIds.contains(accId)) {
                 parentIds.remove(parentIds.indexOf(accId));
                 break;
             }
         }
-        System.debug(childIds);
+        System.debug(parentIds);
         System.debug(parentIdFromChild);
         parentIds.addAll(parentIdFromChild);
         String query = 'SELECT Name, (SELECT ';
@@ -139,18 +143,17 @@ public class ComponentCustomSettings {
         query += ' FROM ' + childName + ' WHERE Id IN :childIds) FROM ' + parentName + ' WHERE Id IN :parentIds'; 
         System.debug(query);
         System.debug(Database.query(query));
-        Integer indexer = 0;
         for (SObject acc : Database.query(query)) {
             wrapper wr = new wrapper();
             wr.Account = acc;
-            if (indexer >= parentIds.size() - parentIdFromChild.size()) {
+            if (parentIdFromChild.contains(acc.Id)) {
                 wr.isAccount = false;
+                System.debug(acc);
             }
             else {
                 wr.isAccount = true;
             }
             listOfAcc.add(wr);
-            indexer++;
         }
         System.debug(listOfAcc);
         return JSON.serialize(listOfAcc);

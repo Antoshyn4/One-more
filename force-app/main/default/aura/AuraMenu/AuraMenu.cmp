@@ -1,0 +1,43 @@
+<aura:component>
+<aura:registerEvent name="changePage" type="c:changePageNumber"/>
+    <aura:attribute name="currentPageNum" type="Integer" default="1"/>
+    <aura:attribute name="isFirstPage" type="String" default="false"/>
+    <aura:attribute name="isLastPage" type="String" default="false"/>
+    <aura:attribute name="isNotSingle" type="String" default="true"/>
+    <aura:attribute name="countOfPages" type="Integer"/>
+        <div class="slds-grid">
+            <aura:if isTrue="{!v.isNotSingle}">
+                <div class="slds-col">
+                    <div class = "Left">
+                        <button disabled="{!v.isFirstPage}" onclick="{!c.drawFirstPage}">First</button>
+                    </div>
+                </div>
+                <div class="slds-col">
+                    <div class = "Center">
+                        <button disabled="{!v.isFirstPage}" onclick="{!c.drawPreviousPage}">Previous</button>
+                    </div>
+                </div>
+                <aura:if isTrue="{!v.isFirstPage}">
+                    <div class="slds-col"></div>
+                </aura:if>
+                    <div class="slds-col">
+                        <div class = "Center">
+                            <lightning:input type="Integer" value="{!v.currentPageNum}" onchange="{!c.drawSomePage}"/>
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div class = "Center">
+                            <button disabled="{!v.isLastPage}" onclick="{!c.drawNextPage}">Next</button>
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div class = "Right">
+                            <button disabled="{!v.isLastPage}" onclick="{!c.drawLastPage}">Last</button>
+                        </div>
+                    </div>
+                <aura:if isTrue="{!v.isLastPage}">
+                    <div class="slds-col"></div>
+                </aura:if>
+            </aura:if>
+        </div>
+</aura:component>	

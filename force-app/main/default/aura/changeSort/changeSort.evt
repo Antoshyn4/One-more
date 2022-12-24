@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT">
+    <aura:attribute name="sortField" type="String"></aura:attribute>
+    <aura:attribute name="isDiscending" type="Boolean"></aura:attribute>
+</aura:event>

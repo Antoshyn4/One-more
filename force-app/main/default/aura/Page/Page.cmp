@@ -1,0 +1,23 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" controller="ComponentCustomSettings" >
+<aura:handler name="changePage" event="c:changePageNumber"
+        action="{!c.handleChangePageNumber}"/>
+<aura:handler name="init" action="{!c.doInit}" value="{!this}"/> 
+<aura:handler name="changeSort" event="c:changeSort" action="{!c.changeSort}"/> 
+<aura:attribute name="listOfObjects" type="object[]"/>
+<aura:attribute name="listOfPageObjects" type="object[]"/>
+<aura:attribute name="sortField" type="String"/>
+<aura:attribute name="sortedByDescending" type="Boolean"/>
+<aura:attribute name="PageCount" type="Integer"/>
+<aura:attribute name="PageNumber" type="Integer"/>
+<aura:attribute name="countOfAllElements" type="Integer"/>
+<aura:attribute name="countOfColumns" type="Integer"/>
+<aura:attribute name="countOfPageElements" type="Integer"/>
+<aura:attribute name="ParentName" type="String"/>
+<aura:attribute name="ChildName" type="String"/>
+<aura:attribute name="isFirstPage" type="String"/>
+<aura:attribute name="isLastPage" type="String"/>
+<aura:attribute name="isNotSingle" type="String"/>
+    <c:SearchAndSortAura/>
+    <c:listOfObjects listOfAllObjects="{!v.listOfPageObjects}"></c:listOfObjects>
+    <c:AuraMenu isFirstPage="{!v.isFirstPage}" isLastPage="{!v.isLastPage}" isNotSingle="{!v.isNotSingle}" countOfPages="{!v.PageCount}" ></c:AuraMenu>
+</aura:component>
