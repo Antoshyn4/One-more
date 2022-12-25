@@ -1,6 +1,7 @@
 <aura:component>
 <aura:attribute name="searchText" type="String"/>
 <aura:registerEvent name="changeSort" type="c:changeSort"/>
+<aura:registerEvent name="doSearch" type="c:doSearchEvent"/>
 <aura:attribute name="options" type="String[]" default="[
 { label: 'Creation Date', value: 'CreatedDate' },
 { label: 'Name', value: 'Name' }
@@ -10,7 +11,7 @@
     <div class="slds-grid">
         <div class="slds-col slds-size_6-of-12">
             <lightning:input
-            type="search" label="Search" value="{!v.searchText}" onchange="{!c.doSearchEvent}">
+            type="search" label="Search" value="{!v.searchText}" onchange="{!c.doSearchFun}">
             </lightning:input>  
         </div>
         <div class="slds-col slds-size_5-of-12">

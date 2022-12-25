@@ -13,4 +13,16 @@
         component.set("v.isDiscending",true);
         helper.doEvent(component);
     },
+    doSearchFun : function(component, event, helper) {
+        let input = event.getSource();
+        let search = input.get("v.value");
+        if (search.length >= 2) {
+            component.set("v.searchText", search);
+            let searchEvent = component.getEvent("doSearch");
+            searchEvent.setParams({
+                "Search" : search
+            });
+            searchEvent.fire();
+        }
+    },
 })

@@ -31,6 +31,7 @@ public class ComponentCustomSettings {
     }
     @AuraEnabled
     public static void setOrder(Boolean isDesc, String sortBy){
+        System.debug(isDesc + ' ' + sortBy);
         Sort_Acc__c customSetting = Sort_Acc__c.getInstance('Default');
         customSetting.SortBy__c = sortBy;
         customSetting.isDesc__c = isDesc ? 'DESC' : 'ASC';
@@ -90,6 +91,7 @@ public class ComponentCustomSettings {
     }
     @AuraEnabled(cacheable=true)
     public static String doSearch(String search, String parentName, String childName){
+        System.debug('o');
         String field;
         List<List<SObject>> searchList = new List<List<SObject>>();
         switch on parentName {

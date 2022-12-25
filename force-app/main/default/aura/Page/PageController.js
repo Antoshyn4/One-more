@@ -17,8 +17,11 @@
             if (state === 'SUCCESS') {
                 let result = response.getReturnValue();
                 let temp = []; 
+                let ob = {};
                 for (const key in result) {
-                    temp.push(result[key])
+                    ob = result[key];
+                    ob['isAccount'] = true;
+                    temp.push(ob);
                 }
                 component.set("v.listOfObjects", temp);
                 $A.enqueueAction(getSortAction);
@@ -44,11 +47,11 @@
                 component.set("v.countOfColumns",result.Columns_count__c);
                 component.set("v.countOfPageElements", result.On_page_elements_count__c);
                 component.set("v.PageCount", Math.ceil(component.get("v.countOfAllElements")/component.get("v.countOfPageElements")));
-                component.set("v.isLastPage", component.get("v.PageNumber") == component.get("v.PageCount"));
-                component.set("v.isNotSingle", component.get("v.PageCount") > 1);
                 if (component.get("v.listOfObjects").length < component.get("v.countOfAllElements")) {
                     component.set("v.PageCount", Math.ceil(component.get("v.listOfObjects").length/component.get("v.countOfPageElements")));
                 }
+                component.set("v.isLastPage", component.get("v.PageNumber") == component.get("v.PageCount"));
+                component.set("v.isNotSingle", component.get("v.PageCount") > 1);
                 helper.changeOnPageElements(component);
             }
         })
@@ -68,6 +71,61 @@
         component.set("v.sortField", field);
         component.set("v.sortedByDescending", isDisc);
         component.set("v.listOfObjects", helper.quickSort(component, component.get("v.listOfObjects")));
+        let setOrderAction = component.get("c.setOrder");
+        setOrderAction.setParams({
+            "sortBy" : component.get("v.sortField"),
+            "isDesc" : component.get("v.sortedByDescending")
+        });
+        $A.enqueueAction(setOrderAction);
         helper.changeOnPageElements(component);
+    },
+    doSearchHandler : function(component, event, helper) {
+        let search = event.getParam("Search");
+        let searchAction = component.get("c.doSearch");
+        searchAction.setParams({
+            "search" : search,
+            "parentName" : component.get("v.ParentName"),
+            "childName" : component.get("v.ChildName")
+        });
+        searchAction.setCallback(this, function(response) {
+            let state = response.getState();
+            if (state === "SUCCESS") {
+                let temp = [];
+                for (const key in JSON.parse(response.getReturnValue())) {
+                    let ob = {};
+                    ob['Account'] = JSON.parse(response.getReturnValue())[key].Account;
+                    ob['isAccount'] = JSON.parse(response.getReturnValue())[key].isAccount;
+                    temp.push(ob);
+                }
+                let temp2 = [];
+                for (const key in temp) {
+                    let ob = {};
+                    ob = temp[key]['Account'];
+                    ob['isAccount'] = temp[key]['isAccount'];
+                    if (temp[key]['Account'][component.get("v.ChildName")] != undefined) {
+                        ob[component.get("v.ChildName")] = temp[key]['Account'][component.get("v.ChildName")].records;
+                    }
+                    else {
+                        ob[component.get("v.ChildName")] = [];
+                    }
+                    temp2.push(ob);
+                }
+                if (temp2.length == 0) {
+
+                } else {
+                    component.set("v.PageCount", Math.ceil(component.get("v.countOfAllElements")/component.get("v.countOfPageElements")));
+                    component.set("v.listOfObjects", helper.quickSort(component, temp2));
+                    if (component.get("v.listOfObjects").length < component.get("v.countOfAllElements")) {
+                        component.set("v.PageCount", Math.ceil(component.get("v.listOfObjects").length/component.get("v.countOfPageElements")));
+                    }
+                    component.set("v.PageNumber", 1);
+                    component.set("v.isFirstPage", "true");
+                    component.set("v.isLastPage", component.get("v.PageNumber") == component.get("v.PageCount"));
+                    component.set("v.isNotSingle", component.get("v.PageCount") > 1);
+                    helper.changeOnPageElements(component);
+                }
+            }
+        });
+        $A.enqueueAction(searchAction);
     }
 })

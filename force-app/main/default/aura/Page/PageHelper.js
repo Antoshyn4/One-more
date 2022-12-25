@@ -28,6 +28,7 @@
         let countOfPageElements = component.get("v.countOfPageElements");
         let Parent = component.get("v.ParentName");
         let Child = component.get("v.ChildName");
+        let temp = [];
         for (let i = 0; i < countOfColumns; i++){
             let object = {};
             object['type'] = '';
@@ -41,6 +42,7 @@
                         inObject['Name'] = listOfAllElements[startIndex + i + z * countOfColumns].Name;
                         inObject['Id'] = listOfAllElements[startIndex + i + z * countOfColumns].Id;
                         inObject['Contacts'] = listOfAllElements[startIndex + i + z * countOfColumns].Contacts;
+                        inObject['isAccount'] = listOfAllElements[startIndex + i + z * countOfColumns].isAccount;
                         if (listOfAllElements[startIndex + i + z * countOfColumns].Contacts != undefined) {
                             inObject['Num'] = listOfAllElements[startIndex + i + z * countOfColumns][Child].length;
                             inObject['Count'] = "Count of " + Child + ": " + inObject['Num'];
@@ -50,27 +52,17 @@
                             inObject['Num'] = 0;
                             inObject['Count'] = "Count of " + Child + ": " +  0;
                         }
+                        if (!listOfAllElements[startIndex + i + z * countOfColumns].isAccount) {
+                            temp.push(listOfAllElements[startIndex + i + z * countOfColumns].Id);
+                        }
                     }
                     object.value.push(inObject);
                 }
             }  
             temp2.push(object); 
         }
-        component.set("v.listOfPageObjects",temp2);
-        // let temp = [];
-        // if (this.someRecAll != undefined) {
-        //     debugger;
-        //     for (const key in this.someRecAll['record']) {
-        //         if (!this.someRecAll['record'][key]['isAccount']) { 
-        //             temp.push(this.someRecAll['record'][key]['Account'].Id);
-        //         }
-        //     }
-        //     if (temp.length > 0) {
-        //         debugger;
-        //         this.activeSections = temp;
-        //         console.log(JSON.stringify(temp));
-        //     }  
-        //     this.someRecAll = undefined;
-        // }
+        component.set("v.listOfPageObjects", temp2);
+        component.set("v.listOfParentsId", temp); 
+        debugger;
     }
 })
