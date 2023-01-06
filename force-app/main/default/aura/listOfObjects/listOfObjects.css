@@ -10,7 +10,19 @@
     color: rgb(51, 2, 63);
     text-align: center;
     min-height: 240px;
+    border: 1px solid rgb(0, 0, 0);
 }
-.THIS .Name{
+.THIS .Clearcolum {
+    color: rgb(51, 2, 63);
+    text-align: center;
+    min-height: 240px;
+}
+.THIS .Clean {
+
+}
+.THIS .Green{
     border: 2px solid rgb(11, 184, 19);
+}
+.THIS .Red{
+    border: 2px solid rgb(151, 6, 6);
 }

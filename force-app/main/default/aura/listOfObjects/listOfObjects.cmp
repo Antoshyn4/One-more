@@ -1,27 +1,48 @@
-<aura:component>
+<aura:component controller="ComponentCustomSettings">
 <aura:attribute name="listOfAllObjects" type="object[]"/>
 <aura:attribute name="activeSections" type="List" default="['001Dn000006iSHcIAM']"/>
+<aura:attribute name="isModalOpen" type="Boolean" default="false"/>
+<aura:attribute name="name" type="String"/>
+<aura:attribute name="options" type="object[]"/>
+<aura:attribute name="recordId" type="String"/>
+<aura:attribute name="ErrorMessage" type="String"/>
+<aura:attribute name="isCase" type="Boolean"/>
+<aura:attribute name="PageCount" type="Integer"/>
+<c:popUpComponent isModalOpen="{!v.isModalOpen}" name="{!v.name}" options="{!v.options}" recordId="{!v.recordId}" ErrorMessage="{!v.ErrorMessage}"/>
 <section class="slds-card__body">
+    <aura:if isTrue="{!v.PageCount == 0}">
+        Nothing found
+    </aura:if>
     <div id="list" class="slds-grid">
-        Test {!v.activeSections}
         <aura:iteration items="{!v.listOfAllObjects}" var="item">
             <div class="slds-col">
                 <aura:iteration items="{!item.value}" var="element">
-                    <div class="colum">
-                        <div class="Name" onclick="{!c.doPopUp}" aria-haspopup="modal" data-id="{!element.Id}" data-count="{!element.Num}">
-                            {!element.Name}
-                        </div>
+                    <div class="{!element.Num > -1 ? 'colum' : 'Clearcolum'}">
+                        <aura:if isTrue="{!element.Num > -1}"> 
+                            <div class="{!if(element.Num >= 5 ,'Green',if(element.Num >= 3 ,'Clean','Red'))}" onclick="{!c.doPopUp}" aria-haspopup="modal" data-id="{!element.Id}" data-count="{!element.Num}">
+                                {!element.Name}
+                            </div> 
+                            <aura:set attribute="else">
+                                <div class="Clean">
+                                </div>
+                            </aura:set>
+                        </aura:if>
                         <aura:if isTrue="{!element.Num > 0}">
                             <lightning:accordion
                                 allowMultipleSectionsOpen="true"
                                 onsectiontoggle="{!c.handleSectionToggle}"
                                 class="accordion"
-                                activeSectionName="{!v.activeSections}"
+                                activeSectionName="{! element.isAccount?'A':'B'}"
                                 >
-                                <lightning:accordionSection name="{!element.Id}" class="Test" label="{!element.Count}">
+                                <lightning:accordionSection name="B" label="{!element.Count}">
                                     <aura:iteration items="{!element.Contacts}" var="Contact">
-                                        <div onclick="{c.doPopUp}" aura-id="{!Contact.Id}">
-                                            <p>{!Contact.Name}</p>
+                                        <div onclick="{!c.doPopUp}" aura-id="{!Contact.Id}" data-id="{!Contact.Id}">
+                                            <aura:if isTrue="{!v.isCase}">
+                                                <p>{!Contact.CaseNumber}</p>
+                                                <aura:set attribute="else">
+                                                    <p>{!Contact.Name}</p>
+                                                </aura:set>
+                                            </aura:if>
                                         </div>
                                     </aura:iteration>
                                 </lightning:accordionSection >

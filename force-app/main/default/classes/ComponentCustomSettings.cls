@@ -39,6 +39,7 @@ public class ComponentCustomSettings {
     }
     @AuraEnabled
     public static List<SObject> getAccountList(String parentName, String childName){
+        //System.debug(parentName + ' child: ' + childName);
         String query;
         query = 'SELECT Name, CreatedDate, (SELECT ';
         String field;
@@ -55,8 +56,8 @@ public class ComponentCustomSettings {
         return Database.query(query);
     }
     @AuraEnabled(cacheable=true)
-    public static My_page_settings__c getCustomSettings(){
-        return My_page_settings__c.getValues('First Page');
+    public static Dependencies__c getCustomSettings(){
+        return [SELECT All_elements_count__c, Child__c, Columns_count__c, On_page_elements_count__c, Parent__c, Error_message__c FROM Dependencies__c LIMIT 1];
     }
     @AuraEnabled(cacheable=true)
     public static SObject getAllAccountRecords(Id accid){
@@ -159,5 +160,13 @@ public class ComponentCustomSettings {
         }
         System.debug(listOfAcc);
         return JSON.serialize(listOfAcc);
+    }
+    @AuraEnabled
+    public static void upsertSObject(String fieldName, String newValue, Id objectsId){
+        String name = objectsId.getSObjectType().getDescribe().getName();
+        String query = 'SELECT ' + fieldName + ' FROM ' + name + ' WHERE Id =: objectsId';
+        SObject oldObject = Database.query(query);
+        oldObject.put(fieldName, newValue);
+        upsert oldObject;
     }
 }

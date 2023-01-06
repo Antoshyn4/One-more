@@ -2,6 +2,7 @@
 <aura:attribute name="searchText" type="String"/>
 <aura:registerEvent name="changeSort" type="c:changeSort"/>
 <aura:registerEvent name="doSearch" type="c:doSearchEvent"/>
+<aura:registerEvent name="clearSearch" type="c:clearSearch"/>
 <aura:attribute name="options" type="String[]" default="[
 { label: 'Creation Date', value: 'CreatedDate' },
 { label: 'Name', value: 'Name' }

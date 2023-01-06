@@ -1,0 +1,39 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" >
+    <lightning:card>
+        <lightning:recordEditForm
+            objectApiName="Dependencies__c" 
+            recordId="a0FDn0000001mGBMAY">
+                    <lightning:inputField
+                    aura:id="submit" 
+                    fieldName="Parent__c"
+                    type="submit"
+                    ></lightning:inputField>
+                    <lightning:inputField
+                    aura:id="submit" 
+                    fieldName="Child__c"
+                    type="submit">
+                    </lightning:inputField>
+                    <lightning:inputField
+                    aura:id="submit" 
+                    fieldName="All_elements_count__c"
+                    type="submit">
+                    </lightning:inputField>
+                    <lightning:inputField
+                    aura:id="submit" 
+                    fieldName="Columns_count__c"
+                    type="submit">
+                    </lightning:inputField>
+                    <lightning:inputField
+                    aura:id="submit" 
+                    fieldName="On_page_elements_count__c"
+                    type="submit">
+                    </lightning:inputField>
+                    <lightning:inputField
+                    aura:id="submit" 
+                    fieldName="Error_message__c"
+                    type="submit">
+                    </lightning:inputField>
+                    <lightning:button class="slds-m-top_small" type="submit" label="Update" />
+        </lightning:recordEditForm>
+    </lightning:card>
+</aura:component>	

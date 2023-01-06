@@ -4,8 +4,8 @@ import getAllObjectsWithChild from '@salesforce/apex/ComponentCustomSettings.get
 export default class DependedPicklists extends LightningElement {
     
     handleSubmit(event){
-        event.preventDefault();       // stop the form from submitting
-        const fields = event.detail.fields;
-        this.template.querySelector('lightning-record-edit-form').submit(fields);
+        // event.preventDefault(); 
+        // const fields = event.detail.fields;
+        // this.template.querySelector('lightning-record-edit-form').submit(fields);
      }
 }

@@ -6,7 +6,6 @@
 <aura:handler name="doSearch" event="c:doSearchEvent" action="{!c.doSearchHandler}"/> 
 <aura:attribute name="listOfObjects" type="object[]"/>
 <aura:attribute name="listOfPageObjects" type="object[]"/>
-<aura:attribute name="listOfParentsId" type="list"/>
 <aura:attribute name="sortField" type="String"/>
 <aura:attribute name="sortedByDescending" type="Boolean"/>
 <aura:attribute name="PageCount" type="Integer"/>
@@ -19,8 +18,9 @@
 <aura:attribute name="isFirstPage" type="String"/>
 <aura:attribute name="isLastPage" type="String"/>
 <aura:attribute name="isNotSingle" type="String"/>
-Tester {!v.listOfParentsId} {!v.isNotSingle} 
+<aura:attribute name="isCase" type="Boolean"/>
+<aura:attribute name="ErrorMessage" type="String"/>
     <c:SearchAndSortAura sortField="{!v.sortField}" isDiscending="{!v.sortedByDescending}"/>
-    <c:listOfObjects listOfAllObjects="{!v.listOfPageObjects}" activeSections="{!v.listOfParentsId}"></c:listOfObjects>
+    <c:listOfObjects listOfAllObjects="{!v.listOfPageObjects}" isCase="{!v.isCase}" PageCount="{!v.PageCount}" ErrorMessage="{!v.ErrorMessage}"></c:listOfObjects>
     <c:AuraMenu isFirstPage="{!v.isFirstPage}" isLastPage="{!v.isLastPage}" isNotSingle="{!v.isNotSingle}" countOfPages="{!v.PageCount}" currentPageNum="{!v.PageNumber}"></c:AuraMenu>
 </aura:component>

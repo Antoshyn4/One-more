@@ -1,0 +1,37 @@
+<aura:component controller="ComponentCustomSettings">
+    <aura:attribute name="name" type="String"/>
+    <aura:attribute name="options" type="object[]"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="ErrorMessage" type="String"/>
+<aura:attribute name="isModalOpen" type="boolean" default="false"/>
+<div class="slds-m-around_xx-large">
+    <aura:if isTrue="{!v.isModalOpen}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.name}</h2>
+                </header>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning:recordEditForm
+                        objectApiName="{!v.name}" 
+                        recordId="{!v.recordId}">
+                        <lightning:messages/>
+                            <aura:iteration items="{!v.options}" var="it">
+                                <lightning:inputField 
+                                type="submit"
+                                fieldName="{!it.label}"
+                                value="{!it.value}"
+                                onchange="{!c.saveResults}"
+                                ></lightning:inputField>
+                            </aura:iteration>
+                            <lightning:button variant="brand" type="submit" name="NonUpdate" label="Update" />
+                        </lightning:recordEditForm>
+                    </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button label="OK" variant="brand" type="submit" onclick="{!c.closeModel}"></lightning:button>
+                </footer>
+            </div>
+        </section>
+    </aura:if>
+</div>
+</aura:component>	

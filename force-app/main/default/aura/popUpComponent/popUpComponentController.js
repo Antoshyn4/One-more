@@ -11,6 +11,12 @@
        let updateRecordAction = component.get("c.upsertSObject");
        let opt = component.get("v.options");
        switch (field) {
+           case 'Name' :
+               alert(component.get("v.ErrorMessage"));
+               debugger;
+               a.set("v.value", opt[helper.check(opt, component, 'Name')].value);
+               //value = opt[helper.check(opt, component, 'Name')].value;
+               break;
            case 'Phone':
                value = value.replace('\ ','-');
                value = value.replace(/^\-/,'-');

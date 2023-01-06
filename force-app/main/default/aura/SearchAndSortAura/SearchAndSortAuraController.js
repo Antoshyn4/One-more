@@ -24,5 +24,12 @@
             });
             searchEvent.fire();
         }
+        else if (search.length == 0){
+            let searchEvent = component.getEvent("doSearch");
+            searchEvent.setParams({
+                "Search" : ""
+            });
+            searchEvent.fire();
+        }
     },
 })
