@@ -14,7 +14,7 @@ public with sharing class userTriggerHandler {
             delete listOfJunctions;
         }
     }
-    public void onInsert(List<User> newList, List<User> oldList) {
+    public void onInsert(List<User> newList) {
         List<User_Junction__c> listOfJunctions = new List<User_Junction__c>();
         for (User user : newList) {
             User_Junction__c user_junction = new User_Junction__c();
@@ -22,7 +22,7 @@ public with sharing class userTriggerHandler {
             listOfJunctions.add(user_junction);
         }
         if (listOfJunctions.size() != 0) {
-            insert listOfJunctions;
+            upsert listOfJunctions;
         }
     }
 }

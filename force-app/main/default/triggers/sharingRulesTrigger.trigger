@@ -1,6 +1,6 @@
-trigger sharingRulesTrigger on Sharing_rules__c (after insert, before update) {
+trigger sharingRulesTrigger on Sharing_rules__c (after insert, after update) {
     sharingRulesTriggerHandler handler = new sharingRulesTriggerHandler();
-    if (Trigger.isBefore) {
+    if (Trigger.isAfter) {
         if (Trigger.isUpdate) {
             handler.onUpdate(Trigger.newMap, Trigger.oldMap);
         }

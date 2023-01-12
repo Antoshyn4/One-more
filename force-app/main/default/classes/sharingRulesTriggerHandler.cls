@@ -86,14 +86,11 @@ public with sharing class sharingRulesTriggerHandler {
             List<Id> listOfUsersIdShareWith = customHierarchyService.getAllUsersIdByRoles(listOfRolesAbove); 
             if (listOfUsersIdWhoShare.size() > 0 && listOfUsersIdShareWith.size() > 0) {
                 List<Id> listOfObjectsId = new List<id>();
-                // for (User user : listOfUsersIdWhoShare) {
-                //     System.runAs(user){
-                //         for (Share_object__c ob : [SELECT Id, OwnerId FROM Share_object__c]) {
-                //             listOfObjectsId.add(ob.Id);
-                //         }
-                //     }
-                // }
-                for (Share_object__c ob : [SELECT Id, OwnerId FROM Share_object__c WHERE OwnerId IN: listOfUsersIdWhoShare]) {
+                Set<Id> setOfObjectsId = new Set<Id>();
+                for (Share_object__Share shareObject : [SELECT ParentId FROM Share_object__Share WHERE UserOrGroupId IN: listOfUsersIdWhoShare]) {
+                    setOfObjectsId.add(shareObject.ParentId);
+                }
+                for (Share_object__c ob : [SELECT Id, OwnerId FROM Share_object__c WHERE OwnerId IN: listOfUsersIdWhoShare OR Id IN :setOfObjectsId]) {
                     listOfObjectsId.add(ob.Id);
                 }
                 customHierarchyService.shareRecordWithUsers(listOfObjectsId, listOfUsersIdShareWith, 0);

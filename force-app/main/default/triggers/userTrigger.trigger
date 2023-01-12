@@ -10,7 +10,7 @@ trigger userTrigger on User (after insert, before update, before delete) {
     }
     else if (Trigger.isAfter) {
         if (Trigger.isInsert) {
-            handler.onInsert(Trigger.new, Trigger.old);
+            handler.onInsert(Trigger.new);
         }
     }
 }

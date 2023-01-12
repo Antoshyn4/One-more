@@ -49,7 +49,6 @@ public with sharing class customHierarchyService {
         List<Database.SaveResult> listOfResults = Database.insert(listOfSharedObjects,false);
         for (Database.SaveResult sr : listOfResults) {
             if(sr.isSuccess()){
-                System.debug([SELECT Role_Hierarchy__r.Name, User__c FROM User_Junction__c WHERE User__c =: usersId[index]][0].Role_Hierarchy__r.Name);
                 if (customHierarchyService.shareRecordWithUsers(listOfRecordId, usersId, ++index)) {
                     return true;
                 }
@@ -69,7 +68,6 @@ public with sharing class customHierarchyService {
                     }
                }
                else{
-                    //System.debug([SELECT Role_Hierarchy__r.Name, User__c FROM User_Junction__c WHERE User__c =: usersId[index]][0].Role_Hierarchy__r.Name);
                     System.debug(err.getMessage());
                     return false;
                }

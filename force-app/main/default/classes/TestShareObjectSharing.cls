@@ -2,8 +2,8 @@
 public with sharing class TestShareObjectSharing {
     @TestSetup
     static void makeUsers(){
-        Integer countOfUsers = 4;
-        Integer countOfHierarchies = 103;
+        Integer countOfUsers = 50;
+        Integer countOfHierarchies = 50;
         Integer countOfObjects = 0;
         List<User> listOfUsers = new List<User>();
         for (Integer i = 0; i < countOfUsers; i++) {
@@ -322,19 +322,25 @@ public with sharing class TestShareObjectSharing {
     }
     @isTest 
     static void testSharingRulesInsertAndUpdate(){
-        // Role_Hierarchy__c role = [SELECT Name FROM Role_Hierarchy__c WHERE Name = 'Level 4' LIMIT 1][0];
-        // role.Parent__c = null;
-        // //[SELECT Name FROM Role_Hierarchy__c WHERE Name = 'Level 1' LIMIT 1][0].Id;
-        // role.Name = 'Level 2.1';
-        // update role;
+        Role_Hierarchy__c role = [SELECT Name FROM Role_Hierarchy__c WHERE Name = 'Level 5' LIMIT 1][0];
+        role.Parent__c = null;
+        //[SELECT Name FROM Role_Hierarchy__c WHERE Name = 'Level 1' LIMIT 1][0].Id;
+        role.Name = 'Level 2.1';
+        update role;
 
+        role = [SELECT Name FROM Role_Hierarchy__c WHERE Name = 'Level 6' LIMIT 1][0];
+        role.Parent__c = [SELECT Id FROM Role_Hierarchy__c WHERE Name = 'Level 2.1' LIMIT 1].Id;
+        //[SELECT Name FROM Role_Hierarchy__c WHERE Name = 'Level 1' LIMIT 1][0].Id;
+        role.Name = 'Level 2.2';
+        update role;
+        
         Sharing_rules__c sharing = new Sharing_rules__c();
-        sharing.Who_share__c = [SELECT Id FROM Role_Hierarchy__c WHERE Name = 'Level 2' LIMIT 1].Id;
-        sharing.Share_with__c = [SELECT Id FROM Role_Hierarchy__c WHERE Name = 'Level 4' LIMIT 1].Id;
+        sharing.Who_share__c = [SELECT Id FROM Role_Hierarchy__c WHERE Name = 'Level 1' LIMIT 1].Id;
+        sharing.Share_with__c = [SELECT Id FROM Role_Hierarchy__c WHERE Name = 'Level 2.2' LIMIT 1].Id;
         sharing.Name = 'Test';
         insert sharing;
 
-        User_Junction__c junctionUserWhoShared = [SELECT User__c, Role_Hierarchy__r.Name FROM User_Junction__c WHERE Role_Hierarchy__r.Name = 'Level 4'];
+        User_Junction__c junctionUserWhoShared = [SELECT User__c, Role_Hierarchy__r.Name FROM User_Junction__c WHERE Role_Hierarchy__r.Name = 'Level 3'];
         User_Junction__c junctionUserWhoShared2 = [SELECT User__c, Role_Hierarchy__r.Name FROM User_Junction__c WHERE Role_Hierarchy__r.Name = 'Level 2'];
         User UserWhoShared = [SELECT Id FROM User WHERE Id =: junctionUserWhoShared.User__c];
         User UserWhoShared2 = [SELECT Id FROM User WHERE Id =: junctionUserWhoShared2.User__c];
@@ -347,7 +353,6 @@ public with sharing class TestShareObjectSharing {
         List<User> listOfUsersSharedWith = [SELECT Id FROM User WHERE Id IN: setOfUserIdWithRole];
 
         List<Share_object__c> listOfSharedObjects = new List<Share_object__c>();
-
         System.runAs(UserWhoShared){
             for (Integer i = 0; i < 5; i++) {
                 Share_object__c shareOb = new Share_object__c(); 
@@ -386,28 +391,6 @@ public with sharing class TestShareObjectSharing {
                 System.debug([SELECT Id FROM Share_object__c].size());
             }
         }
-        junctionUserWhoShared2.Role_Hierarchy__c = [SELECT Id FROM Role_Hierarchy__c WHERE Name = 'Level 6'][0].Id;
-        update junctionUserWhoShared2;
-
-        for (User user : listOfUsersSharedWith) {
-            System.runAs(user){
-                for (User_Junction__c temp : [SELECT Role_Hierarchy__r.Name, User__c FROM User_Junction__c Where User__c =: user.id LIMIT 1]) {
-                    System.debug(temp.Role_Hierarchy__r.Name);
-                    //System.debug(temp.User__c);
-                }
-                System.debug(user.Id);
-                System.debug([SELECT Id FROM Share_object__c].size());
-            }
-        }
-        // for (User user : listOfUsersSharedWith) {
-        //     System.runAs(user){
-        //         for (User_Junction__c temp : [SELECT Role_Hierarchy__r.Name, User__c FROM User_Junction__c Where User__c =: user.id LIMIT 1]) {
-        //             System.debug(temp.Role_Hierarchy__r.Name);
-        //         }
-        //         System.debug([SELECT Id FROM Share_object__c].size());
-        //     }
-        // }
-        
         Test.stopTest();
     }
     @isTest 
@@ -449,8 +432,9 @@ public with sharing class TestShareObjectSharing {
         }
         List<Id> usersId = new List<Id>();
         usersId.add(UserWhoShared.Id);
-        customHierarchyService.shareRecordWithUsers(listOfRecordId, usersId, 0);
-
+        System.runAs(UserWhoShared2){
+            customHierarchyService.shareRecordWithUsers(listOfRecordId, usersId, 0);
+        }
         for (User user : listOfUsersSharedWith) {
             System.runAs(user){
                 for (User_Junction__c temp : [SELECT Role_Hierarchy__r.Name, User__c FROM User_Junction__c Where User__c =: user.id LIMIT 1]) {

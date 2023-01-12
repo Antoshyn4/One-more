@@ -50,10 +50,10 @@ public with sharing class roleHierarchyTriggerHandler {
                 }
             }
         }
-        // if (listOfRolesToUpdate.size() != 0) {
-        //     System.debug(listOfRolesToUpdate);
-        //     update listOfRolesToUpdate;
-        // }
+        //System.debug([SELECT Id FROM Role_Hierarchy__c WHERE Id = 'a0IDn000000FU5FMAW']);
+        if (listOfRolesToUpdate.size() != 0) {
+            //roleHierarchyTriggerHandler.test(JSON.serializePretty(listOfRolesToUpdate));
+        }
     }
     public void onInsert(List<Role_Hierarchy__c> newList, List<Role_Hierarchy__c> oldList) {
         // for (Role_Hierarchy__c role : newList) {
@@ -61,5 +61,10 @@ public with sharing class roleHierarchyTriggerHandler {
                 
         //     }
         // }   
+    }
+    @future 
+    static void test(String testString){
+        List<Role_Hierarchy__c> listOfRolesToUpdate = (List<Role_Hierarchy__c>)JSON.deserialize(testString, List<Role_Hierarchy__c>.class);
+        update listOfRolesToUpdate;
     }
 }

@@ -100,8 +100,8 @@ public with sharing class shareObjectTriggerHandler {
             if (mapOfJunctionUserByUserId.get(userId).Role_Hierarchy__c != null) {
                 List<Role_Hierarchy__c> listOfRolesAbove = new List<Role_Hierarchy__c>();
                 customHierarchyService.getAllRolesAbove(mapOfAllRoles.get(mapOfJunctionUserByUserId.get(userId).Role_Hierarchy__c), mapOfAllRoles, listOfRolesAbove, mapOfWithWhoSharesIdByWhoSharesId, null);
-                System.debug(mapOfSharedObjectsIdByUserId.get(userId));
                 List<Id> listOfUsersId = customHierarchyService.getAllUsersIdByRoles(listOfRolesAbove);
+                listOfUsersId.remove(listOfUsersId.indexOf(userId));
                 customHierarchyService.shareRecordWithUsers(mapOfSharedObjectsIdByUserId.get(userId), listOfUsersId, 0);
             }
         }
