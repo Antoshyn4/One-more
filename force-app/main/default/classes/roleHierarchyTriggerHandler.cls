@@ -6,6 +6,7 @@ public with sharing class roleHierarchyTriggerHandler {
             mapOfAllRoles.put(role.Id, role);
         }
         List<User_Junction__c> listOfUsersJunctionWithRole = [SELECT User__c, Role_Hierarchy__c FROM User_Junction__c WHERE Role_Hierarchy__c IN: newMap.values()];
+
         Map<Id, List<Id>> mapOfUsersIdByRoleId = new Map<Id, List<Id>>();
         for (User_Junction__c user : listOfUsersJunctionWithRole) {
             List<Id> listOfUsersIdByRole = new List<Id>();
@@ -25,6 +26,16 @@ public with sharing class roleHierarchyTriggerHandler {
             listOfRolesId.add(shareingRule.Share_with__c);
             mapOfWithWhoSharesIdByWhoSharesId.put(shareingRule.Who_share__c, listOfRolesId);
         }
+
+        Map<Id, List<Id>> mapOfListOfObjectsIdBywnerId = new  Map<Id, List<Id>>();
+        for (Share_object__c ob : [SELECT OwnerId FROM Share_object__c ]) {
+            List<Id> listOfObjectsId = new List<Id>();
+            if (mapOfListOfObjectsIdBywnerId.get(ob.OwnerId) != null) {
+                listOfObjectsId = mapOfListOfObjectsIdBywnerId.get(ob.OwnerId);
+            }
+            listOfObjectsId.add(ob.Id);
+            mapOfListOfObjectsIdBywnerId.put(ob.Id, listOfObjectsId);
+        }
         
         for (Role_Hierarchy__c newRole : newMap.values()) {
             Role_Hierarchy__c oldRole = oldMap.get(newRole.Id);
@@ -33,8 +44,10 @@ public with sharing class roleHierarchyTriggerHandler {
                 customHierarchyService.getAllRolesAbove(newRole,mapOfAllRoles,listOfRolesAbove, mapOfWithWhoSharesIdByWhoSharesId, null);
                 List<Id> listOfUsersId = customHierarchyService.getAllUsersIdByRoles(listOfRolesAbove);
                 List<Id> listOfObjectsId = new List<id>();
-                for (Share_object__c ob : [SELECT Id, OwnerId FROM Share_object__c WHERE OwnerId IN: mapOfUsersIdByRoleId.get(newRole.Id)]) {
-                    listOfObjectsId.add(ob.Id);
+                for (Id usersId : mapOfUsersIdByRoleId.get(newRole.Id)) {
+                    if (mapOfListOfObjectsIdBywnerId.get(usersId) != null) {
+                        listOfObjectsId.addAll(mapOfListOfObjectsIdBywnerId.get(usersId));
+                    }
                 }
                 customHierarchyService.shareRecordWithUsers(listOfObjectsId, listOfUsersId, 0);
                 List<Role_Hierarchy__c> listOfRolesBetween = customHierarchyService.getAllRolesBetween(mapOfAllRoles.get(oldRole.Parent__c), mapOfAllRoles.get(newRole.Parent__c), mapOfAllRoles);

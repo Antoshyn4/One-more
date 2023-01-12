@@ -28,7 +28,6 @@ public with sharing class shareObjectTriggerHandler {
             mapOfJunctionUserByUserId.put(junctionUser.User__c, junctionUser);
         }
 
-
         Map<Id, List<Id>> mapOfWithWhoSharesIdByWhoSharesId = new Map<Id, List<Id>>();
         System.debug([SELECT Who_share__c, Share_with__c FROM Sharing_rules__c]);
         for (Sharing_rules__c shareingRule : [SELECT Who_share__c, Share_with__c FROM Sharing_rules__c]) {

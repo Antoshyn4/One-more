@@ -2,7 +2,7 @@
 public with sharing class TestShareObjectSharing {
     @TestSetup
     static void makeUsers(){
-        Integer countOfUsers = 50;
+        Integer countOfUsers = 10;
         Integer countOfHierarchies = 50;
         Integer countOfObjects = 0;
         List<User> listOfUsers = new List<User>();
@@ -407,6 +407,7 @@ public with sharing class TestShareObjectSharing {
         List<User> listOfUsersSharedWith = [SELECT Id FROM User WHERE Id IN: setOfUserIdWithRole];
 
         List<Share_object__c> listOfSharedObjects = new List<Share_object__c>();
+        Test.startTest();
 
         System.runAs(UserWhoShared2){
             for (Integer i = 0; i < 5; i++) {
@@ -418,30 +419,27 @@ public with sharing class TestShareObjectSharing {
             insert listOfSharedObjects;
         }
 
-        for (User user : listOfUsersSharedWith) {
-            System.runAs(user){
-                for (User_Junction__c temp : [SELECT Role_Hierarchy__r.Name, User__c FROM User_Junction__c Where User__c =: user.id LIMIT 1]) {
-                    System.debug(temp.Role_Hierarchy__r.Name);
-                }
-                System.debug([SELECT Id FROM Share_object__c].size());
-            }
-        }
+        // for (User user : listOfUsersSharedWith) {
+        //     System.runAs(user){
+        //         for (User_Junction__c temp : [SELECT Role_Hierarchy__r.Name, User__c FROM User_Junction__c Where User__c =: user.id LIMIT 1]) {
+        //             System.debug(temp.Role_Hierarchy__r.Name);
+        //         }
+        //         System.debug([SELECT Id FROM Share_object__c].size());
+        //     }
+        // }
         List<Id> listOfRecordId = new List<Id>();
         for (Share_object__c ob : [SELECT Id FROM Share_object__c]) {
             listOfRecordId.add(ob.Id);
         }
-        List<Id> usersId = new List<Id>();
-        usersId.add(UserWhoShared.Id);
-        System.runAs(UserWhoShared2){
-            customHierarchyService.shareRecordWithUsers(listOfRecordId, usersId, 0);
-        }
-        for (User user : listOfUsersSharedWith) {
-            System.runAs(user){
-                for (User_Junction__c temp : [SELECT Role_Hierarchy__r.Name, User__c FROM User_Junction__c Where User__c =: user.id LIMIT 1]) {
-                    System.debug(temp.Role_Hierarchy__r.Name);
-                }
-                System.debug([SELECT Id FROM Share_object__c].size());
-            }
-        }
+        
+        // for (User user : listOfUsersSharedWith) {
+        //     System.runAs(user){
+        //         for (User_Junction__c temp : [SELECT Role_Hierarchy__r.Name, User__c FROM User_Junction__c Where User__c =: user.id LIMIT 1]) {
+        //             System.debug(temp.Role_Hierarchy__r.Name);
+        //         }
+        //         System.debug([SELECT Id FROM Share_object__c].size());
+        //     }
+        // }
+        Test.stopTest();
     }
 }

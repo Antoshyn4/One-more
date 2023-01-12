@@ -5,6 +5,15 @@ public with sharing class userJunctionTriggerHandler {
             mapOfAllRoles.put(role.Id, role);
         }
 
+        Map<Id, List<Id>> mapOfListOfObjectsIdBywnerId = new  Map<Id, List<Id>>();
+        for (Share_object__c ob : [SELECT OwnerId FROM Share_object__c ]) {
+            List<Id> listOfObjectsId = new List<Id>();
+            if (mapOfListOfObjectsIdBywnerId.get(ob.OwnerId) != null) {
+                listOfObjectsId = mapOfListOfObjectsIdBywnerId.get(ob.OwnerId);
+            }
+            listOfObjectsId.add(ob.Id);
+            mapOfListOfObjectsIdBywnerId.put(ob.Id, listOfObjectsId);
+        }
 
         Map<Id, List<Id>> mapOfWithWhoSharesIdByWhoSharesId = new Map<Id, List<Id>>();
         for (Sharing_rules__c shareingRule : [SELECT Who_share__c, Share_with__c FROM Sharing_rules__c]) {
@@ -22,17 +31,19 @@ public with sharing class userJunctionTriggerHandler {
                 List<Role_Hierarchy__c> listOfRolesAbove = new List<Role_Hierarchy__c>();
                 customHierarchyService.getAllRolesAbove(mapOfAllRoles.get(newUser.Role_Hierarchy__c),mapOfAllRoles, listOfRolesAbove, mapOfWithWhoSharesIdByWhoSharesId, null);
                 List<Id> listOfUsersId = customHierarchyService.getAllUsersIdByRoles(listOfRolesAbove);
-                List<Id> listOfObjectsId = new List<id>();
-                for (Share_object__c ob : [SELECT Id, OwnerId FROM Share_object__c WHERE OwnerId =: newUser.User__c]) {
-                    listOfObjectsId.add(ob.Id);
-                }  
-                customHierarchyService.shareRecordWithUsers(listOfObjectsId, listOfUsersId, 0);
+                //List<Id> listOfObjectsId = new List<id>();
+                // for (Share_object__c ob : [SELECT Id, OwnerId FROM Share_object__c WHERE OwnerId =: newUser.User__c]) {
+                //     listOfObjectsId.add(ob.Id);
+                // }  
+                customHierarchyService.shareRecordWithUsers(mapOfListOfObjectsIdBywnerId.get(newUser.User__c), listOfUsersId, 0);
                 if (mapOfAllRoles.get(oldUser.Role_Hierarchy__c) != null) {
                     List<Role_Hierarchy__c> listOfRolesBetween = customHierarchyService.getAllRolesBetween(mapOfAllRoles.get(oldUser.Role_Hierarchy__c), mapOfAllRoles.get(newUser.Role_Hierarchy__c), mapOfAllRoles);
                     System.debug(listOfRolesBetween);
                     if (listOfRolesBetween.size() != 0) {
                         list<Id> listOfUsersToUnshare = customHierarchyService.getAllUsersIdByRoles(listOfRolesBetween);
-                        customHierarchyService.unShareRecordWithUsers(listOfObjectsId, listOfUsersToUnshare);
+                        if (mapOfListOfObjectsIdBywnerId.get(newUser.User__c) != null) {
+                            customHierarchyService.unShareRecordWithUsers(mapOfListOfObjectsIdBywnerId.get(newUser.User__c), listOfUsersToUnshare);
+                        }
                     }
                 }
             }
@@ -42,6 +53,18 @@ public with sharing class userJunctionTriggerHandler {
         Map<Id, Role_Hierarchy__c> mapOfAllRoles = new Map<Id,Role_Hierarchy__c>();
         for (Role_Hierarchy__c role : [SELECT Name, Parent__c FROM Role_Hierarchy__c]) {
             mapOfAllRoles.put(role.Id, role);
+        }
+
+        Map<Id, List<Id>> mapOfListOfObjectsIdBywnerId = new  Map<Id, List<Id>>();
+        for (Share_object__c ob : [SELECT OwnerId FROM Share_object__c ]) {
+            List<Id> listOfObjectsId = new List<Id>();
+            if (mapOfListOfObjectsIdBywnerId.get(ob.OwnerId) != null) {
+                if (mapOfListOfObjectsIdBywnerId.get(ob.OwnerId) != null) {
+                    listOfObjectsId = mapOfListOfObjectsIdBywnerId.get(ob.OwnerId);
+                }
+            }
+            listOfObjectsId.add(ob.Id);
+            mapOfListOfObjectsIdBywnerId.put(ob.Id, listOfObjectsId);
         }
 
 
@@ -61,11 +84,11 @@ public with sharing class userJunctionTriggerHandler {
                 List<Role_Hierarchy__c> listOfRolesAbove = new List<Role_Hierarchy__c>();
                 customHierarchyService.getAllRolesAbove(mapOfAllRoles.get(newUser.Role_Hierarchy__c), mapOfAllRoles, listOfRolesAbove, mapOfWithWhoSharesIdByWhoSharesId, null);
                 List<Id> listOfUsersId = customHierarchyService.getAllUsersIdByRoles(listOfRolesAbove);
-                List<Id> listOfObjectsId = new List<id>();
-                for (Share_object__c ob : [SELECT Id, OwnerId FROM Share_object__c WHERE OwnerId =: newUser.User__c]) {
-                    listOfObjectsId.add(ob.Id);
-                }
-                customHierarchyService.shareRecordWithUsers(listOfObjectsId, listOfUsersId, 0);
+                // List<Id> listOfObjectsId = new List<id>();
+                // for (Share_object__c ob : [SELECT Id, OwnerId FROM Share_object__c WHERE OwnerId =: newUser.User__c]) {
+                //     listOfObjectsId.add(ob.Id);
+                // }
+                customHierarchyService.shareRecordWithUsers(mapOfListOfObjectsIdBywnerId.get(newUser.User__c), listOfUsersId, 0);
             }
         }
     }
