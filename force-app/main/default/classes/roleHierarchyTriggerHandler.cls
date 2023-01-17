@@ -1,4 +1,5 @@
 public with sharing class roleHierarchyTriggerHandler {
+    public static Boolean tracker = false;
     public void onUpdate(Map<Id, Role_Hierarchy__c> newMap, Map<Id, Role_Hierarchy__c> oldMap) {
         List<Role_Hierarchy__c> listOfRolesToUpdate = new List<Role_Hierarchy__c>();
         Map<Id, Role_Hierarchy__c> mapOfAllRoles = new Map<Id,Role_Hierarchy__c>();
@@ -34,25 +35,48 @@ public with sharing class roleHierarchyTriggerHandler {
                 listOfObjectsId = mapOfListOfObjectsIdBywnerId.get(ob.OwnerId);
             }
             listOfObjectsId.add(ob.Id);
-            mapOfListOfObjectsIdBywnerId.put(ob.Id, listOfObjectsId);
+            mapOfListOfObjectsIdBywnerId.put(ob.OwnerId, listOfObjectsId);
+        }
+
+        Map<Id, List<Id>> mapOfAllUsersIdByRoleId = new Map<Id, List<Id>>();
+        for (User_Junction__c user : [SELECT User__c, Role_Hierarchy__c FROM User_Junction__c]) {
+            List<Id> listUsersId = new List<Id>();
+            if (mapOfAllUsersIdByRoleId.get(user.Role_Hierarchy__c) != null) {
+                listUsersId = mapOfAllUsersIdByRoleId.get(user.Role_Hierarchy__c);
+            }
+            listUsersId.add(user.User__c);
+            mapOfAllUsersIdByRoleId.put(user.Role_Hierarchy__c, listUsersId);
         }
         
         for (Role_Hierarchy__c newRole : newMap.values()) {
             Role_Hierarchy__c oldRole = oldMap.get(newRole.Id);
             if (newRole.Parent__c != oldRole.Parent__c) {
                 List<Role_Hierarchy__c> listOfRolesAbove =  new List<Role_Hierarchy__c>();
-                customHierarchyService.getAllRolesAbove(newRole,mapOfAllRoles,listOfRolesAbove, mapOfWithWhoSharesIdByWhoSharesId, null);
-                List<Id> listOfUsersId = customHierarchyService.getAllUsersIdByRoles(listOfRolesAbove);
-                List<Id> listOfObjectsId = new List<id>();
-                for (Id usersId : mapOfUsersIdByRoleId.get(newRole.Id)) {
-                    if (mapOfListOfObjectsIdBywnerId.get(usersId) != null) {
-                        listOfObjectsId.addAll(mapOfListOfObjectsIdBywnerId.get(usersId));
+                customHierarchyService.getAllRolesAbove(newRole, mapOfAllRoles, listOfRolesAbove, mapOfWithWhoSharesIdByWhoSharesId, null);
+                listOfRolesAbove.remove(listOfRolesAbove.indexOf(newRole));
+                List<Id> listOfUsersId = new List<Id>();
+                for (Role_Hierarchy__c role : listOfRolesAbove) {
+                    if (mapOfAllUsersIdByRoleId.get(role.Id) != null) {
+                        listOfUsersId.addAll(mapOfAllUsersIdByRoleId.get(role.Id));
                     }
                 }
-                customHierarchyService.shareRecordWithUsers(listOfObjectsId, listOfUsersId, 0);
-                List<Role_Hierarchy__c> listOfRolesBetween = customHierarchyService.getAllRolesBetween(mapOfAllRoles.get(oldRole.Parent__c), mapOfAllRoles.get(newRole.Parent__c), mapOfAllRoles);
+                List<Id> listOfObjectsId = new List<id>();
+                if (mapOfUsersIdByRoleId.get(newRole.Id) != null) {
+                    for (Id usersId : mapOfUsersIdByRoleId.get(newRole.Id)) {
+                        if (mapOfListOfObjectsIdBywnerId.get(usersId) != null) {
+                            listOfObjectsId.addAll(mapOfListOfObjectsIdBywnerId.get(usersId));
+                        }
+                    }
+                }
+                customHierarchyService.shareRecordWithUsersById(listOfObjectsId, listOfUsersId);
+                List<Role_Hierarchy__c> listOfRolesBetween = customHierarchyService.getAllRolesBetween(mapOfAllRoles.get(oldRole.Parent__c), mapOfAllRoles.get(newRole.Parent__c), mapOfAllRoles, mapOfWithWhoSharesIdByWhoSharesId);
                 if (listOfRolesBetween.size() != 0) {
-                    list<Id> listOfUsersToUnshare = customHierarchyService.getAllUsersIdByRoles(listOfRolesBetween);
+                    list<Id> listOfUsersToUnshare = new List<Id>();
+                    for (Role_Hierarchy__c role : listOfRolesBetween) {
+                        if (mapOfAllUsersIdByRoleId.get(role.Id) != null) {
+                            listOfUsersToUnshare.addAll(mapOfAllUsersIdByRoleId.get(role.Id));
+                        }
+                    }
                     customHierarchyService.unShareRecordWithUsers(listOfObjectsId, listOfUsersToUnshare);
                 }
                 for (Role_Hierarchy__c role : mapOfAllRoles.values()) {
@@ -63,9 +87,11 @@ public with sharing class roleHierarchyTriggerHandler {
                 }
             }
         }
-        //System.debug([SELECT Id FROM Role_Hierarchy__c WHERE Id = 'a0IDn000000FU5FMAW']);
-        if (listOfRolesToUpdate.size() != 0) {
-            //roleHierarchyTriggerHandler.test(JSON.serializePretty(listOfRolesToUpdate));
+        System.debug(listOfRolesToUpdate);
+        if (listOfRolesToUpdate.size() != 0 && roleHierarchyTriggerHandler.tracker == false) {
+            roleHierarchyTriggerHandler.tracker = true;
+            System.debug(listOfRolesToUpdate);
+            Id jobID = Database.executeBatch(new updateRolesBatch(listOfRolesToUpdate));
         }
     }
     public void onInsert(List<Role_Hierarchy__c> newList, List<Role_Hierarchy__c> oldList) {
@@ -74,10 +100,5 @@ public with sharing class roleHierarchyTriggerHandler {
                 
         //     }
         // }   
-    }
-    @future 
-    static void test(String testString){
-        List<Role_Hierarchy__c> listOfRolesToUpdate = (List<Role_Hierarchy__c>)JSON.deserialize(testString, List<Role_Hierarchy__c>.class);
-        update listOfRolesToUpdate;
     }
 }

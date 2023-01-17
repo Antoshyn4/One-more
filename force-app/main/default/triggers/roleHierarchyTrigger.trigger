@@ -1,6 +1,6 @@
-trigger roleHierarchyTrigger on Role_hierarchy__c (before insert, after update) {
+trigger roleHierarchyTrigger on Role_hierarchy__c (before insert, before update) {
     roleHierarchyTriggerHandler handler = new roleHierarchyTriggerHandler();
-    if (Trigger.isAfter) {
+    if (Trigger.isBefore) {
         if (Trigger.isUpdate) {
             handler.onUpdate(Trigger.newMap, Trigger.oldMap);
         }

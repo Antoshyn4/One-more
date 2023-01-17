@@ -5,20 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-
-      "name": "Launch Apex Debugger",
-
-      "type": "apex",
-
+      "name": "Launch Apex Replay Debugger",
+      "type": "apex-replay",
       "request": "launch",
-
-      "userIdFilter": [],
-
-      "requestTypeFilter": [],
-
-      "entryPointFilter": "",
-
-      "sfdxProject": "C:\Users\d.antoshyn\Codes\bikeCard\.sfdx"
+      "logFile": "${command:AskForLogFileName}",
+      "stopOnEntry": true,
+      "trace": true
 
   }
   ]

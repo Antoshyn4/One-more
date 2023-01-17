@@ -4,10 +4,8 @@ trigger sharingRulesTrigger on Sharing_rules__c (after insert, after update) {
         if (Trigger.isUpdate) {
             handler.onUpdate(Trigger.newMap, Trigger.oldMap);
         }
-    }
-    else if (Trigger.isAfter) {
-        if (Trigger.isInsert) {
-            handler.onINsert(Trigger.newMap);
+        else if (Trigger.isInsert) {
+            handler.onInsert(Trigger.newMap);
         }
     }
 }

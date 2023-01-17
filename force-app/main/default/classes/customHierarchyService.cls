@@ -1,8 +1,7 @@
 public with sharing class customHierarchyService {
-    public static void getAllRolesAbove(Role_Hierarchy__c enteredRole, Map<Id,Role_Hierarchy__c> mapOfAllRoles, List<Role_Hierarchy__c> listOfRoles, Map<Id, List<Id>> mapOfWithWhoSharesIdByWhoSharesId, Id idOfRoleWhoShared){
-        if (idOfRoleWhoShared != null && enteredRole.Parent__c == idOfRoleWhoShared) {
-            idOfRoleWhoShared = null;
-            System.debug(listOfRoles);
+    public static void getAllRolesAbove(Role_Hierarchy__c enteredRole, Map<Id,Role_Hierarchy__c> mapOfAllRoles, List<Role_Hierarchy__c> listOfRoles, Map<Id, List<Id>> mapOfWithWhoSharesIdByWhoSharesId, List<Id> idOfRoleWhoShared){
+        if (idOfRoleWhoShared != null && idOfRoleWhoShared.contains(enteredRole.Parent__c)) {
+            idOfRoleWhoShared.remove(idOfRoleWhoShared.indexOf(enteredRole.Parent__c));
             return;
         }
         if (enteredRole == null) {
@@ -15,9 +14,12 @@ public with sharing class customHierarchyService {
         if (mapOfWithWhoSharesIdByWhoSharesId.get(enteredRole.Id) != null) {
             for (Id RolesIdShareWith : mapOfWithWhoSharesIdByWhoSharesId.get(enteredRole.Id)) {
                 List<Role_Hierarchy__c> listOfRolesINSharingRule = new List<Role_Hierarchy__c>();
-                customHierarchyService.getAllRolesAbove(mapOfAllRoles.get(RolesIdShareWith), mapOfAllRoles, listOfRolesINSharingRule, mapOfWithWhoSharesIdByWhoSharesId, enteredRole.Id);
+                if (idOfRoleWhoShared == null) {
+                    idOfRoleWhoShared = new List<Id>();
+                }
+                idOfRoleWhoShared.add(enteredRole.Id);
+                customHierarchyService.getAllRolesAbove(mapOfAllRoles.get(RolesIdShareWith), mapOfAllRoles, listOfRolesINSharingRule, mapOfWithWhoSharesIdByWhoSharesId, idOfRoleWhoShared);
                 listOfRoles.addAll(listOfRolesINSharingRule);
-                System.debug(mapOfAllRoles.get(RolesIdShareWith));
             }
         }
         if (String.isNotBlank(enteredRole.Parent__c)) {
@@ -68,6 +70,7 @@ public with sharing class customHierarchyService {
                     }
                }
                else{
+                    System.debug(usersId[index]);
                     System.debug(err.getMessage());
                     return false;
                }
@@ -75,7 +78,37 @@ public with sharing class customHierarchyService {
         }
         return false;
     }
-    public static List<Role_Hierarchy__c> getAllRolesBetween(Role_Hierarchy__c oldParent, Role_Hierarchy__c newParent, Map<Id,Role_Hierarchy__c> mapOfAllRoles){
+    public static void shareRecordWithUsersById(List<Id> listOfRecordId, List<id> usersId){
+        List<Share_object__Share> listOfSharedObjects = new List<Share_object__Share>();
+        for (Id userId : usersId) {
+            for (Id sharedObjectId : listOfRecordId) {
+                Share_object__Share sharedObject = new Share_object__Share();
+                sharedObject.ParentId = sharedObjectId;
+                sharedObject.UserOrGroupId = userId;
+                sharedObject.AccessLevel = 'Edit';
+                sharedObject.RowCause = Schema.Share_object__Share.RowCause.Manual;
+                listOfSharedObjects.add(sharedObject);
+            }
+        }
+        List<Database.SaveResult> listOfResults = Database.insert(listOfSharedObjects,false);
+        for (Database.SaveResult sr : listOfResults) {
+            if(sr.isSuccess()){
+                return;
+            }
+            else {
+               Database.Error err = sr.getErrors()[0];
+               if(err.getStatusCode() == StatusCode.FIELD_FILTER_VALIDATION_EXCEPTION  &&  
+                    err.getMessage().contains('AccessLevel')){
+                        return;
+               }
+               else{
+                    System.debug(err);
+                    System.debug(err.getMessage());
+               }
+            }
+        }
+    }
+    public static List<Role_Hierarchy__c> getAllRolesBetween(Role_Hierarchy__c oldParent, Role_Hierarchy__c newParent, Map<Id,Role_Hierarchy__c> mapOfAllRoles, Map<Id, List<Id>> mapOfWithWhoSharesIdByWhoSharesId){
         List<Role_Hierarchy__c> listOfRolesAbove = new List<Role_Hierarchy__c>();
         //System.debug(oldParent);
         //System.debug(newParent);
@@ -83,6 +116,15 @@ public with sharing class customHierarchyService {
         Role_Hierarchy__c tempRole = oldParent;
         if (newParent == null) {
             do {
+                if (mapOfWithWhoSharesIdByWhoSharesId.get(tempRole.Id) != null) {
+                    for (Id RolesIdShareWith : mapOfWithWhoSharesIdByWhoSharesId.get(tempRole.Id)) {
+                        List<Role_Hierarchy__c> listOfRolesINSharingRule = new List<Role_Hierarchy__c>();
+                        List<Id> idOfRoleWhoShared = new List<Id>();
+                        idOfRoleWhoShared.add(tempRole.Id);
+                        customHierarchyService.getAllRolesAbove(mapOfAllRoles.get(RolesIdShareWith), mapOfAllRoles, listOfRolesINSharingRule, mapOfWithWhoSharesIdByWhoSharesId, idOfRoleWhoShared);
+                        listOfRolesAbove.addAll(listOfRolesINSharingRule);
+                    }
+                }
                 listOfRolesAbove.add(tempRole);
                 tempRole = mapOfAllRoles.get(tempRole.Parent__c);
             } while (tempRole != null);
@@ -95,6 +137,16 @@ public with sharing class customHierarchyService {
         do {
             if (tempRole.Id == newParent.Id) {
                 return listOfRolesAbove;
+            }
+            if (mapOfWithWhoSharesIdByWhoSharesId.get(tempRole.Id) != null) {
+                for (Id RolesIdShareWith : mapOfWithWhoSharesIdByWhoSharesId.get(tempRole.Id)) {
+                    List<Role_Hierarchy__c> listOfRolesINSharingRule = new List<Role_Hierarchy__c>();
+                    List<Id> idOfRoleWhoShared = new List<Id>();
+                    idOfRoleWhoShared.add(tempRole.Id);
+                    idOfRoleWhoShared.add(newParent.Id);
+                    customHierarchyService.getAllRolesAbove(mapOfAllRoles.get(RolesIdShareWith), mapOfAllRoles, listOfRolesINSharingRule, mapOfWithWhoSharesIdByWhoSharesId, idOfRoleWhoShared);
+                    listOfRolesAbove.addAll(listOfRolesINSharingRule);
+                }
             }
             listOfRolesAbove.add(tempRole);
             tempRole = mapOfAllRoles.get(tempRole.Parent__c);
