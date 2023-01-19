@@ -11,4 +11,5 @@ html {
 .larger {
     transform: scale(3);
     margin: 30px;
+    disabled: "disabled"
 }

@@ -166,4 +166,27 @@ public with sharing class customHierarchyService {
         List<Share_object__Share> listOfShareObjects = [SELECT Id, ParentId, RowCause, UserOrGroupId FROM Share_object__Share WHERE UserOrGroupId IN :usersId AND ParentId IN: listOfRecordId AND RowCause != 'Owner' AND RowCause != 'Rule' AND RowCause != 'GuestRule'];
         delete listOfShareObjects;
     }
+    public static void getAllRolesBelow(Role_Hierarchy__c enteredRole, Map<Id,Role_Hierarchy__c> mapOfAllRoles, List<Role_Hierarchy__c> listOfRoles, Map<Id, List<Id>> mapOfWhoSharesIdByWithWhoSharesId, List<Id> idOfRoleShareWith){
+        if (idOfRoleShareWith.contains(enteredRole.Id)) {
+            idOfRoleShareWith.remove(idOfRoleShareWith.indexOf(enteredRole.Id));
+            return;
+        }
+        if (mapOfWhoSharesIdByWithWhoSharesId.get(enteredRole.Id) != null) {
+            idOfRoleShareWith.add(enteredRole.Id);
+            for (Id roleId : mapOfWhoSharesIdByWithWhoSharesId.get(enteredRole.Id)) {
+                listOfRoles.add(mapOfAllRoles.get(roleId));
+            }
+        }
+        for (Role_Hierarchy__c role : mapOfAllRoles.values()) {
+            if (role.Parent__c == enteredRole.Id) {
+                listOfRoles.add(role);
+            }
+        }
+        List<Role_Hierarchy__c> listOfTempRoles = new list<Role_Hierarchy__c>();
+        for (Role_Hierarchy__c role : listOfRoles) {
+            customHierarchyService.getAllRolesBelow(role, mapOfAllRoles, listOfTempRoles, mapOfWhoSharesIdByWithWhoSharesId, idOfRoleShareWith);
+        }
+        listOfRoles.addAll(listOfTempRoles);
+        return;
+    }
 }

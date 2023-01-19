@@ -1,3 +1,21 @@
 <template>
-    
+    <lightning-accordion allow-multiple-sections-open
+    active-section-name={activeSections}
+    onsectiontoggle={handleSectionToggle}>
+        <template for:each={listOfHierarchies} for:item="Role">
+            <lightning-accordion-section name={Role.Role.Id} class="Test" label={Role.Role.Name} key={Role}>
+                <!--template for:each={Role.listOfAssignedUsers} for:item="User">
+                   <div key={User}> User: {User.Name}</div>
+                </template>
+                <template for:each={Role.listOfSharedObjects} for:item="Object">
+                    <div key={Object}>Objects: {Object.Name}</div>
+                </template-->
+                <template if:true={Role.showChilds}>
+                    <c-role 
+                    list-of-hierarchies={Role.Childs}>
+                    </c-role>
+                </template>         
+            </lightning-accordion-section>
+        </template>
+    </lightning-accordion>
 </template>

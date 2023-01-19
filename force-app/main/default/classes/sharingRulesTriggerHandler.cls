@@ -154,13 +154,14 @@ public with sharing class sharingRulesTriggerHandler {
             List<Id> listOfUsersIdWhoShare = mapOfAllUsersIdByRoleId.get(sharingRule.Who_share__c);
             List<Role_Hierarchy__c> listOfRolesAbove = new List<Role_Hierarchy__c>();
             customHierarchyService.getAllRolesAbove(mapOfAllRoles.get(sharingRule.Share_with__c), mapOfAllRoles, listOfRolesAbove, mapOfWithWhoSharesIdByWhoSharesId, null);
+            System.debug(listOfRolesAbove);
             List<Id> listOfUsersIdShareWith = new List<Id>();
             for (Role_Hierarchy__c role : listOfRolesAbove) {
                 if (mapOfAllUsersIdByRoleId.get(role.Id) != null) {
                     listOfUsersIdShareWith.addAll(mapOfAllUsersIdByRoleId.get(role.Id));
                 }
             }
-            if (listOfUsersIdWhoShare.size() > 0 && listOfUsersIdShareWith.size() > 0) {
+            if (listOfUsersIdWhoShare != null && listOfUsersIdShareWith != null) {
                 List<Id> listOfObjectsId = new List<id>();
                 for (Id userId : listOfUsersIdWhoShare) {
                     if (mapOfSharedOrOwneredObjectsIdByUserId.get(userId) != null) {

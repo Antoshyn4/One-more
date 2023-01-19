@@ -10,6 +10,7 @@ public with sharing class shareObjectTriggerHandler {
             listOFShareObjectsId.add(shareObject.Id);
             mapOfSharedObjectsIdByUserId.put(shareObject.OwnerId, listOFShareObjectsId);
         }
+        
         for (Share_object__c shareObject : oldMap.values()) {
             List<Id> listOFShareObjectsId = new List<Id>();
             if (mapOfSharedObjectsIdByUserId.get(shareObject.OwnerId) != null) {
@@ -18,6 +19,7 @@ public with sharing class shareObjectTriggerHandler {
             listOFShareObjectsId.add(shareObject.Id);
             mapOfSharedObjectsIdByUserId.put(shareObject.OwnerId, listOFShareObjectsId);
         }
+
         Map<Id, Role_Hierarchy__c> mapOfAllRoles = new Map<Id,Role_Hierarchy__c>();
         for (Role_Hierarchy__c role : [SELECT Name, Parent__c FROM Role_Hierarchy__c]) {
             mapOfAllRoles.put(role.Id, role);

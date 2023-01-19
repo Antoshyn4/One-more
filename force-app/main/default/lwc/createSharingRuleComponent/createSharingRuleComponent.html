@@ -1,0 +1,22 @@
+<template>
+    <lightning-layout>
+        <lightning-record-edit-form
+            object-api-name="Sharing_rules__c"
+        >
+        <lightning-layout-item size="6">
+            <div class="slds-grid">
+                <lightning-input-field field-name="Name" class="slds-col"
+                    onchange={nameChangedHandler}></lightning-input-field>
+                <lightning-input-field field-name="Who_share__c" class="slds-col"
+                    onchange={whoShareRuleChangedHandler}></lightning-input-field>
+                <lightning-input-field field-name="Share_with__c" class="slds-col" 
+                    onchange={withWhoShareRuleChangedHandler}></lightning-input-field>
+                <br/>
+            </div>
+            <lightning-button class="slds-m-left_x-small" label="Create Sharing Rule" 
+            id="submit"
+            type="submit"></lightning-button>
+        </lightning-layout-item>
+        </lightning-record-edit-form>
+    </lightning-layout>
+</template>

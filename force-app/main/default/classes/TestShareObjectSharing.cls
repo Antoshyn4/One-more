@@ -455,14 +455,13 @@ public with sharing class TestShareObjectSharing {
             mapOfAllRoles.put(role5.Id, role5);
         }
         Test.stopTest();
-        List<Role_Hierarchy_Wrapper> listOfHierarchies = new List<Role_Hierarchy_Wrapper>();
-        for (Role_Hierarchy__c TempRole : mapOfAllRoles.values()) {
-            if (TempRole.Parent__c == null) {
-                Role_Hierarchy_Wrapper wrapper = new Role_Hierarchy_Wrapper(TempRole, mapOfAllRoles);
-                listOfHierarchies.add(wrapper);
-            }
-        }
-        System.debug(JSON.serialize(listOfHierarchies));
+        // List<Role_Hierarchy_Wrapper> listOfHierarchies = new List<Role_Hierarchy_Wrapper>();
+        // for (Role_Hierarchy__c TempRole : mapOfAllRoles.values()) {
+        //     if (TempRole.Parent__c == null) {
+        //         Role_Hierarchy_Wrapper wrapper = new Role_Hierarchy_Wrapper(TempRole, mapOfAllRoles);
+        //         listOfHierarchies.add(wrapper);
+        //     }
+        // }
         // for (Role_Hierarchy_Wrapper wrapper : listOfHierarchies) {
         //     System.debug(wrapper);
         // }

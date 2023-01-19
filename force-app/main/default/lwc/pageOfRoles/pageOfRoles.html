@@ -1,3 +1,17 @@
 <template>
-    
+    <lightning-card>
+        <c-role
+            list-of-hierarchies={listOfHierarchies}
+            onshowrecords={showRecords}>
+        </c-role>
+    </lightning-card>
+    <lightning-card>
+        <c-show-users-and-records
+        list-of-users={listOfUsers}
+        list-of-records={listOfRecords}>
+        </c-show-users-and-records>
+    </lightning-card>
+    <lightning-card>
+        <c-create-sharing-rule-component></c-create-sharing-rule-component>
+    </lightning-card>
 </template>

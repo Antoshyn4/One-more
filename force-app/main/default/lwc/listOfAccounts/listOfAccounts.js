@@ -83,6 +83,7 @@ export default class ListOfAccounts extends LightningElement {
         this.changeOnPageElements();
     }
     @api changeRecord(someRec){
+        //this.activeSections = ['001Dn0000065gWqIAI','001Dn0000065gWsIAI','001Dn000006iDqRIAU'];
         if (someRec['record'] == undefined) {
             this.record = [];
         }
@@ -186,4 +187,4 @@ export default class ListOfAccounts extends LightningElement {
             this.check = false;
         }
     }
-}   
+}

@@ -87,10 +87,8 @@ public with sharing class roleHierarchyTriggerHandler {
                 }
             }
         }
-        System.debug(listOfRolesToUpdate);
         if (listOfRolesToUpdate.size() != 0 && roleHierarchyTriggerHandler.tracker == false) {
             roleHierarchyTriggerHandler.tracker = true;
-            System.debug(listOfRolesToUpdate);
             Id jobID = Database.executeBatch(new updateRolesBatch(listOfRolesToUpdate));
         }
     }
